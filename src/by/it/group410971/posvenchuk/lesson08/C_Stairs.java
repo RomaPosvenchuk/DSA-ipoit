@@ -40,14 +40,19 @@ public class C_Stairs {
         for (int i = 0; i < n; i++) {
             stairs[i]=scanner.nextInt();
         }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        int result = 0;
-
-
-
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        if (n == 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        dp[0] = stairs[0];
+        if (n == 1) {
+            return dp[0];
+        }
+        dp[1] = Math.max(stairs[1], stairs[0] + stairs[1]);
+        for (int i = 2; i < n; i++) {
+            dp[i] = stairs[i] + Math.max(dp[i-1], dp[i-2]);
+        }
+        return dp[n-1];
     }
 
 
