@@ -39,19 +39,31 @@ public class A_LIS {
         System.out.print(result);
     }
 
-    int getSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
+    int getSeqSize(InputStream stream) {
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
         int n = scanner.nextInt();
         int[] m = new int[n];
-        //читаем всю последовательность
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+
+        int[] dp = new int[n]; // Массив для хранения длин подпоследовательностей
+        int maxLength = 0; // Максимальная длина подпоследовательности
+
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1; // Изначально каждый элемент образует подпоследовательность длины 1
+            for (int j = 0; j < i; j++) {
+                if (m[j] < m[i]) { // Если предыдущий элемент меньше текущего
+                    if (dp[j] + 1 > dp[i]) {
+                        dp[i] = dp[j] + 1; // Обновляем длину подпоследовательности
+                    }
+                }
+            }
+            if (dp[i] > maxLength) {
+                maxLength = dp[i]; // Обновляем максимальную длину
+            }
+        }
+
+        return maxLength;
     }
 }
