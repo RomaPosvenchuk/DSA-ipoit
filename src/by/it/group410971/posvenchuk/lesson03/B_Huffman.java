@@ -2,6 +2,8 @@ package by.it.group410971.posvenchuk.lesson03;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 // Lesson 3. B_Huffman.
@@ -51,16 +53,42 @@ public class B_Huffman {
 
     String decode(InputStream inputStream) throws FileNotFoundException {
         StringBuilder result = new StringBuilder();
-        //прочитаем строку для кодирования из тестового файла
         Scanner scanner = new Scanner(inputStream);
-        Integer count = scanner.nextInt();
-        Integer length = scanner.nextInt();
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-        //тут запишите ваше решение
 
+        // Чтение количества символов и длины закодированной строки
+        int k = scanner.nextInt();
+        int l = scanner.nextInt();
+        scanner.nextLine(); // Пропуск оставшейся части строки
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-        return result.toString(); //01001100100111
+        // Создание карты для хранения кодов (битовая последовательность -> символ)
+        Map<String, Character> codeMap = new HashMap<>();
+
+        // Чтение k строк с кодами символов
+        for (int i = 0; i < k; i++) {
+            String line = scanner.nextLine();
+            // Разделение строки на символ и его код
+            String[] parts = line.split(": ");
+            char letter = parts[0].charAt(0);
+            String code = parts[1];
+            codeMap.put(code, letter);
+        }
+
+        // Чтение закодированной строки
+        String encoded = scanner.nextLine();
+
+        // Декодирование строки
+        StringBuilder currentCode = new StringBuilder();
+        for (char c : encoded.toCharArray()) {
+            currentCode.append(c);
+            // Проверка наличия текущего кода в карте
+            if (codeMap.containsKey(currentCode.toString())) {
+                // Добавление соответствующего символа к результату
+                result.append(codeMap.get(currentCode.toString()));
+                currentCode.setLength(0); // Сброс текущего кода
+            }
+        }
+
+        return result.toString();
     }
 
 
