@@ -2,6 +2,9 @@ package by.it.group410971.posvenchuk.lesson07;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 /*
@@ -49,12 +52,65 @@ import java.util.Scanner;
 public class C_EditDist {
 
     String getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        int m = one.length();
+        int n = two.length();
+        int[][] dp = new int[m + 1][n + 1];
 
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= n; j++) {
+            dp[0][j] = j;
+        }
 
-        String result = "";
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                int cost = (one.charAt(i - 1) == two.charAt(j - 1) ? 0 : 1);
+                dp[i][j] = Math.min(
+                        Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1),
+                        dp[i - 1][j - 1] + cost
+                );
+            }
+        }
+
+        List<String> operations = new ArrayList<>();
+        int i = m;
+        int j = n;
+        while (i > 0 && j > 0) {
+            int cost = (one.charAt(i - 1) == two.charAt(j - 1) ? 0 : 1);
+            if (dp[i][j] == dp[i - 1][j - 1] + cost) {
+                if (cost == 0) {
+                    operations.add("#");
+                } else {
+                    operations.add("~" + two.charAt(j - 1));
+                }
+                i--;
+                j--;
+            } else if (dp[i][j] == dp[i - 1][j] + 1) {
+                operations.add("-" + one.charAt(i - 1));
+                i--;
+            } else if (dp[i][j] == dp[i][j - 1] + 1) {
+                operations.add("+" + two.charAt(j - 1));
+                j--;
+            }
+        }
+
+        while (i > 0) {
+            operations.add("-" + one.charAt(i - 1));
+            i--;
+        }
+        while (j > 0) {
+            operations.add("+" + two.charAt(j - 1));
+            j--;
+        }
+
+        Collections.reverse(operations);
+        StringBuilder result = new StringBuilder();
+        for (String op : operations) {
+            result.append(op).append(",");
+        }
+
+        return result.toString();
     }
 
 
