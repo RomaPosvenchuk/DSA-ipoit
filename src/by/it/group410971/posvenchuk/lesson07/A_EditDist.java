@@ -40,11 +40,35 @@ public class A_EditDist {
 
 
     int getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        int m = one.length();
+        int n = two.length();
+        int[][] cache = new int[m+1][n+1];
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                cache[i][j] = -1;
+            }
+        }
+        return recursiveEditDistance(one, two, m, n, cache);
+    }
 
-
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+    private int recursiveEditDistance(String one, String two, int i, int j, int[][] cache) {
+        if (cache[i][j] != -1) {
+            return cache[i][j];
+        }
+        if (i == 0) {
+            cache[i][j] = j;
+            return j;
+        }
+        if (j == 0) {
+            cache[i][j] = i;
+            return i;
+        }
+        int cost = (one.charAt(i-1) == two.charAt(j-1)) ? 0 : 1;
+        int delete = recursiveEditDistance(one, two, i-1, j, cache) + 1;
+        int insert = recursiveEditDistance(one, two, i, j-1, cache) + 1;
+        int replace = recursiveEditDistance(one, two, i-1, j-1, cache) + cost;
+        int result = Math.min(Math.min(delete, insert), replace);
+        cache[i][j] = result;
         return result;
     }
 
