@@ -40,34 +40,104 @@ public class C_QSortOptimized {
         }
     }
 
-    int[] getAccessory2(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
+    int[] getAccessory2(InputStream stream) {
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!
-        //число отрезков отсортированного массива
         int n = scanner.nextInt();
-        Segment[] segments = new Segment[n];
-        //число точек
         int m = scanner.nextInt();
+        int[] starts = new int[n];
+        int[] ends = new int[n];
         int[] points = new int[m];
         int[] result = new int[m];
 
-        //читаем сами отрезки
         for (int i = 0; i < n; i++) {
-            //читаем начало и конец каждого отрезка
-            segments[i] = new Segment(scanner.nextInt(), scanner.nextInt());
+            starts[i] = scanner.nextInt();
+            ends[i] = scanner.nextInt();
         }
-        //читаем точки
         for (int i = 0; i < m; i++) {
             points[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи с применением быстрой сортировки
-        //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        quickSort3Way(starts, 0, starts.length - 1);
+        quickSort3Way(ends, 0, ends.length - 1);
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        for (int i = 0; i < m; i++) {
+            int p = points[i];
+            int count1 = upperBound(starts, p);
+            int count2 = lowerBound(ends, p);
+            result[i] = count1 - count2;
+        }
+
         return result;
     }
+
+    private void quickSort3Way(int[] a, int lo, int hi) {
+        while (lo < hi) {
+            int[] p = partition3(a, lo, hi);
+            if (p[0] - lo < hi - p[1]) {
+                quickSort3Way(a, lo, p[0] - 1);
+                lo = p[1] + 1;
+            } else {
+                quickSort3Way(a, p[1] + 1, hi);
+                hi = p[0] - 1;
+            }
+        }
+    }
+
+    private int[] partition3(int[] a, int lo, int hi) {
+        int pivot = a[lo];
+        int lt = lo;
+        int gt = hi;
+        int i = lo + 1;
+        while (i <= gt) {
+            if (a[i] < pivot) {
+                swap(a, lt, i);
+                lt++;
+                i++;
+            } else if (a[i] > pivot) {
+                swap(a, i, gt);
+                gt--;
+            } else {
+                i++;
+            }
+        }
+        return new int[]{lt, gt};
+    }
+
+    private void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    private int upperBound(int[] a, int key) {
+        int low = 0;
+        int high = a.length;
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (a[mid] <= key) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+
+    private int lowerBound(int[] a, int key) {
+        int low = 0;
+        int high = a.length;
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (a[mid] < key) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+
+
 
     //отрезок
     private class Segment implements Comparable {
