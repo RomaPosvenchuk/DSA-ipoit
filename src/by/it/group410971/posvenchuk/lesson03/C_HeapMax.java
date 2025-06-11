@@ -69,30 +69,59 @@ public class C_HeapMax {
     }
 
     private class MaxHeap {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-        //тут запишите ваше решение.
-        //Будет мало? Ну тогда можете его собрать как Generic и/или использовать в варианте B
         private List<Long> heap = new ArrayList<>();
 
-        int siftDown(int i) { //просеивание вверх
+        int siftDown(int i) {
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+            int largest = i;
+            int size = heap.size();
 
+            if (left < size && heap.get(left) > heap.get(largest)) {
+                largest = left;
+            }
+            if (right < size && heap.get(right) > heap.get(largest)) {
+                largest = right;
+            }
+            if (largest != i) {
+                swap(i, largest);
+                return siftDown(largest);
+            }
             return i;
         }
 
-        int siftUp(int i) { //просеивание вниз
-
+        int siftUp(int i) {
+            if (i == 0) return i;
+            int parent = (i - 1) / 2;
+            if (heap.get(i) > heap.get(parent)) {
+                swap(i, parent);
+                return siftUp(parent);
+            }
             return i;
         }
 
-        void insert(Long value) { //вставка
+        void insert(Long value) {
+            heap.add(value);
+            siftUp(heap.size() - 1);
         }
 
-        Long extractMax() { //извлечение и удаление максимума
-            Long result = null;
-
-            return result;
+        Long extractMax() {
+            if (heap.isEmpty()) return null;
+            Long max = heap.get(0);
+            int last = heap.size() - 1;
+            heap.set(0, heap.get(last));
+            heap.remove(last);
+            if (!heap.isEmpty()) {
+                siftDown(0);
+            }
+            return max;
         }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
+        private void swap(int i, int j) {
+            Long temp = heap.get(i);
+            heap.set(i, heap.get(j));
+            heap.set(j, temp);
+        }
     }
 
     // РЕМАРКА. Это задание исключительно учебное.
