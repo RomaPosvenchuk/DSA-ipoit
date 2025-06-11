@@ -43,22 +43,67 @@ public class C_GetInversions {
         System.out.print(result);
     }
 
-    int calc(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
+    int calc(InputStream stream) {
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!
-        //размер массива
         int n = scanner.nextInt();
-        //сам массив
         int[] a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
         }
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!     тут ваше решение   !!!!!!!!!!!!!!!!!!!!!!!!
+        return mergeSortAndCount(a, 0, a.length - 1);
+    }
 
+    private int mergeSortAndCount(int[] array, int left, int right) {
+        int count = 0;
+        if (left < right) {
+            int mid = (left + right) / 2;
+            // Рекурсивный вызов для левой и правой частей
+            count += mergeSortAndCount(array, left, mid);
+            count += mergeSortAndCount(array, mid + 1, right);
+            // Слияние с подсчетом инверсий
+            count += mergeAndCount(array, left, mid, right);
+        }
+        return count;
+    }
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+    private int mergeAndCount(int[] array, int left, int mid, int right) {
+        // Размеры временных массивов
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
+
+        // Временные массивы
+        int[] leftArray = new int[n1];
+        int[] rightArray = new int[n2];
+
+        // Копирование данных
+        for (int i = 0; i < n1; i++) {
+            leftArray[i] = array[left + i];
+        }
+        for (int j = 0; j < n2; j++) {
+            rightArray[j] = array[mid + 1 + j];
+        }
+
+        int i = 0, j = 0, k = left;
+        int inversions = 0;
+
+        while (i < n1 && j < n2) {
+            if (leftArray[i] <= rightArray[j]) {
+                array[k++] = leftArray[i++];
+            } else {
+                array[k++] = rightArray[j++];
+                // Все оставшиеся элементы в leftArray образуют инверсии с текущим элементом rightArray
+                inversions += (n1 - i);
+            }
+        }
+
+        // Копирование оставшихся элементов
+        while (i < n1) {
+            array[k++] = leftArray[i++];
+        }
+        while (j < n2) {
+            array[k++] = rightArray[j++];
+        }
+
+        return inversions;
     }
 }
