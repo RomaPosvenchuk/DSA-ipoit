@@ -45,22 +45,43 @@ public class C_LongNotUpSubSeq {
     }
 
     int getNotUpSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
         int n = scanner.nextInt();
         int[] m = new int[n];
-        //читаем всю последовательность
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
 
+        int[] lastVal = new int[n+1];
+        lastVal[0] = Integer.MAX_VALUE;
+        int len = 0;
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        for (int i = 0; i < n; i++) {
+            int x = m[i];
+            int left = 0;
+            int right = len;
+            int j = -1;
+
+            while (left <= right) {
+                int mid = (left + right) / 2;
+                if (lastVal[mid] >= x) {
+                    j = mid;
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+
+            int newLen = j + 1;
+            if (newLen > len) {
+                len = newLen;
+                lastVal[newLen] = x;
+            } else if (x > lastVal[newLen]) {
+                lastVal[newLen] = x;
+            }
+        }
+
+        return len;
     }
 
 }
