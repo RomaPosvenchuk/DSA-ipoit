@@ -26,22 +26,31 @@ public class B_CountSort {
         }
     }
 
-    int[] countSort(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
+    int[] countSort(InputStream stream) {
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //размер массива
         int n = scanner.nextInt();
         int[] points = new int[n];
-
-        //читаем точки
         for (int i = 0; i < n; i++) {
             points[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи с применением сортировки подсчетом
 
+        // Создаем массив для подсчета (11 элементов: 0-10)
+        int[] count = new int[11];
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        // Подсчитываем частоту каждого числа
+        for (int num : points) {
+            count[num]++;
+        }
+
+        // Формируем отсортированный массив
+        int index = 0;
+        for (int num = 1; num <= 10; num++) {
+            while (count[num] > 0) {
+                points[index++] = num;
+                count[num]--;
+            }
+        }
+
         return points;
     }
 
