@@ -37,23 +37,33 @@ public class B_LongDivComSubSeq {
         System.out.print(result);
     }
 
-    int getDivSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
+
+    int getDivSeqSize(InputStream stream) {
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
         int n = scanner.nextInt();
         int[] m = new int[n];
-        //читаем всю последовательность
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
 
+        int[] dp = new int[n]; // Массив для хранения длин подпоследовательностей
+        int maxLength = 0; // Максимальная длина подпоследовательности
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1; // Изначально каждый элемент образует подпоследовательность длины 1
+            for (int j = 0; j < i; j++) {
+                if (m[i] % m[j] == 0) { // Проверяем, делится ли текущий элемент на предыдущий
+                    if (dp[j] + 1 > dp[i]) {
+                        dp[i] = dp[j] + 1; // Обновляем длину подпоследовательности
+                    }
+                }
+            }
+            if (dp[i] > maxLength) {
+                maxLength = dp[i]; // Обновляем максимальную длину
+            }
+        }
+
+        return maxLength;
     }
 
 }
