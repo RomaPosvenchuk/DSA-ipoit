@@ -2,6 +2,7 @@ package by.it.group410971.posvenchuk.lesson10;
 
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MyArrayDeque<E> implements Deque<E> {
 
@@ -13,16 +14,6 @@ public class MyArrayDeque<E> implements Deque<E> {
 
     public MyArrayDeque() {
         this.elements = new Object[DEFAULT_CAPACITY];
-        this.head = 0;
-        this.tail = 0;
-        this.size = 0;
-    }
-
-    public MyArrayDeque(int initialCapacity) {
-        if (initialCapacity < 0) {
-            throw new IllegalArgumentException("Initial capacity cannot be negative");
-        }
-        this.elements = new Object[initialCapacity];
         this.head = 0;
         this.tail = 0;
         this.size = 0;
@@ -89,10 +80,6 @@ public class MyArrayDeque<E> implements Deque<E> {
 
     @Override
     public void addFirst(E e) {
-        if (e == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
-
         ensureCapacity(size + 1);
 
         // Вычисляем новый индекс для head
@@ -103,10 +90,6 @@ public class MyArrayDeque<E> implements Deque<E> {
 
     @Override
     public void addLast(E e) {
-        if (e == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
-
         ensureCapacity(size + 1);
 
         elements[tail] = e;
@@ -122,7 +105,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     @Override
     public E getFirst() {
         if (size == 0) {
-            throw new java.util.NoSuchElementException("Deque is empty");
+            throw new NoSuchElementException("Deque is empty");
         }
 
         @SuppressWarnings("unchecked")
@@ -133,7 +116,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     @Override
     public E getLast() {
         if (size == 0) {
-            throw new java.util.NoSuchElementException("Deque is empty");
+            throw new NoSuchElementException("Deque is empty");
         }
 
         int lastIndex = (tail - 1 + elements.length) % elements.length;
@@ -177,9 +160,7 @@ public class MyArrayDeque<E> implements Deque<E> {
         return element;
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    //////      Методы, которые можно не реализовывать, но нужно     ///////
-    /////////////////////////////////////////////////////////////////////////
+    // Остальные методы интерфейса Deque (опциональные)
 
     @Override
     public boolean offerFirst(E e) {
@@ -197,7 +178,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     public E removeFirst() {
         E element = pollFirst();
         if (element == null) {
-            throw new java.util.NoSuchElementException("Deque is empty");
+            throw new NoSuchElementException("Deque is empty");
         }
         return element;
     }
@@ -206,7 +187,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     public E removeLast() {
         E element = pollLast();
         if (element == null) {
-            throw new java.util.NoSuchElementException("Deque is empty");
+            throw new NoSuchElementException("Deque is empty");
         }
         return element;
     }
@@ -244,11 +225,6 @@ public class MyArrayDeque<E> implements Deque<E> {
     @Override
     public E peek() {
         return peekFirst();
-    }
-
-    @Override
-    public boolean addAll(java.util.Collection<? extends E> c) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -290,7 +266,7 @@ public class MyArrayDeque<E> implements Deque<E> {
             @Override
             public E next() {
                 if (!hasNext()) {
-                    throw new java.util.NoSuchElementException();
+                    throw new NoSuchElementException();
                 }
 
                 @SuppressWarnings("unchecked")
@@ -317,7 +293,7 @@ public class MyArrayDeque<E> implements Deque<E> {
             @Override
             public E next() {
                 if (!hasNext()) {
-                    throw new java.util.NoSuchElementException();
+                    throw new NoSuchElementException();
                 }
 
                 @SuppressWarnings("unchecked")
@@ -338,6 +314,11 @@ public class MyArrayDeque<E> implements Deque<E> {
         head = 0;
         tail = 0;
         size = 0;
+    }
+
+    @Override
+    public boolean addAll(java.util.Collection<? extends E> c) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

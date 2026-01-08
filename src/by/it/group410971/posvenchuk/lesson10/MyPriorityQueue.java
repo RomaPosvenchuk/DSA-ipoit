@@ -68,7 +68,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
         }
     }
 
-    // Просеивание вверх (восстановление свойства кучи при добавлении)
+    // Просеивание вверх (при добавлении)
     private void siftUp(int index) {
         if (index == 0) return;
 
@@ -87,22 +87,20 @@ public class MyPriorityQueue<E> implements Queue<E> {
         }
     }
 
-    // Просеивание вниз (восстановление свойства кучи при удалении корня)
+    // Просеивание вниз (при удалении корня)
     private void siftDown(int index) {
         int smallest = index;
         int leftChild = 2 * index + 1;
         int rightChild = 2 * index + 2;
 
-        @SuppressWarnings("unchecked")
-        E current = (E) heap[index];
-
         // Сравниваем с левым потомком
         if (leftChild < size) {
             @SuppressWarnings("unchecked")
             E left = (E) heap[leftChild];
+            @SuppressWarnings("unchecked")
+            E current = (E) heap[smallest];
             if (compare(left, current) < 0) {
                 smallest = leftChild;
-                current = left;
             }
         }
 
@@ -171,10 +169,18 @@ public class MyPriorityQueue<E> implements Queue<E> {
     }
 
     @Override
+    public E remove() {
+        if (size == 0) {
+            throw new NoSuchElementException("Queue is empty");
+        }
+        return poll();
+    }
+
+    @Override
     public boolean remove(Object o) {
         // Удаление произвольного элемента из кучи
         for (int i = 0; i < size; i++) {
-            if (o.equals(heap[i])) {
+            if (o == null ? heap[i] == null : o.equals(heap[i])) {
                 removeAt(i);
                 return true;
             }
@@ -198,6 +204,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
 
             // Восстанавливаем свойство кучи
             siftDown(index);
+
             // Если элемент не опустился вниз, пробуем поднять его вверх
             if (index > 0) {
                 @SuppressWarnings("unchecked")
@@ -212,17 +219,9 @@ public class MyPriorityQueue<E> implements Queue<E> {
     }
 
     @Override
-    public E remove() {
-        if (size == 0) {
-            throw new NoSuchElementException("Queue is empty");
-        }
-        return poll();
-    }
-
-    @Override
     public boolean contains(Object o) {
         for (int i = 0; i < size; i++) {
-            if (o.equals(heap[i])) {
+            if (o == null ? heap[i] == null : o.equals(heap[i])) {
                 return true;
             }
         }
@@ -402,9 +401,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return modified;
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    //////      Методы, которые можно не реализовывать полностью      ///////
-    /////////////////////////////////////////////////////////////////////////
+    // Остальные методы интерфейса Queue (опциональные)
 
     @Override
     public Iterator<E> iterator() {
@@ -460,17 +457,34 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return a;
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    //////     Методы, которые выбрасывают UnsupportedOperationException /////
-    /////////////////////////////////////////////////////////////////////////
+    // Дополнительные методы для отладки
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
+    // Проверка свойства кучи
+    public boolean isHeap() {
+        for (int i = 0; i < size; i++) {
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
+            if (left < size) {
+                @SuppressWarnings("unchecked")
+                E parent = (E) heap[i];
+                @SuppressWarnings("unchecked")
+                E leftChild = (E) heap[left];
+                if (compare(leftChild, parent) < 0) {
+                    return false;
+                }
+            }
+
+            if (right < size) {
+                @SuppressWarnings("unchecked")
+                E parent = (E) heap[i];
+                @SuppressWarnings("unchecked")
+                E rightChild = (E) heap[right];
+                if (compare(rightChild, parent) < 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

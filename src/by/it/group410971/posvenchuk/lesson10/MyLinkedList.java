@@ -89,22 +89,13 @@ public class MyLinkedList<E> implements Deque<E> {
 
         Node<E> current = head;
 
-        if (o == null) {
-            while (current != null) {
-                if (current.data == null) {
-                    removeNode(current);
-                    return true;
-                }
-                current = current.next;
+        while (current != null) {
+            if (o == null && current.data == null ||
+                    o != null && o.equals(current.data)) {
+                removeNode(current);
+                return true;
             }
-        } else {
-            while (current != null) {
-                if (o.equals(current.data)) {
-                    removeNode(current);
-                    return true;
-                }
-                current = current.next;
-            }
+            current = current.next;
         }
 
         return false;
@@ -117,10 +108,6 @@ public class MyLinkedList<E> implements Deque<E> {
 
     @Override
     public void addFirst(E e) {
-        if (e == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
-
         Node<E> newNode = new Node<>(e);
 
         if (head == null) {
@@ -138,10 +125,6 @@ public class MyLinkedList<E> implements Deque<E> {
 
     @Override
     public void addLast(E e) {
-        if (e == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
-
         Node<E> newNode = new Node<>(e);
 
         if (tail == null) {
@@ -228,11 +211,7 @@ public class MyLinkedList<E> implements Deque<E> {
         return data;
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    //////      Дополнительные методы для тестирования и отладки     ///////
-    /////////////////////////////////////////////////////////////////////////
-
-    // Получить элемент по индексу (не из интерфейса Deque, но полезно)
+    // Дополнительный метод для получения элемента по индексу (не из интерфейса Deque)
     public E get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
@@ -256,9 +235,7 @@ public class MyLinkedList<E> implements Deque<E> {
         return current.data;
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    //////      Методы, которые можно не реализовывать, но нужно     ///////
-    /////////////////////////////////////////////////////////////////////////
+    // Остальные методы интерфейса Deque (опциональные)
 
     @Override
     public boolean offerFirst(E e) {
@@ -313,22 +290,13 @@ public class MyLinkedList<E> implements Deque<E> {
 
         Node<E> current = tail;
 
-        if (o == null) {
-            while (current != null) {
-                if (current.data == null) {
-                    removeNode(current);
-                    return true;
-                }
-                current = current.prev;
+        while (current != null) {
+            if (o == null && current.data == null ||
+                    o != null && o.equals(current.data)) {
+                removeNode(current);
+                return true;
             }
-        } else {
-            while (current != null) {
-                if (o.equals(current.data)) {
-                    removeNode(current);
-                    return true;
-                }
-                current = current.prev;
-            }
+            current = current.prev;
         }
 
         return false;
@@ -361,26 +329,14 @@ public class MyLinkedList<E> implements Deque<E> {
 
     @Override
     public boolean contains(Object o) {
-        if (size == 0) {
-            return false;
-        }
-
         Node<E> current = head;
 
-        if (o == null) {
-            while (current != null) {
-                if (current.data == null) {
-                    return true;
-                }
-                current = current.next;
+        while (current != null) {
+            if (o == null && current.data == null ||
+                    o != null && o.equals(current.data)) {
+                return true;
             }
-        } else {
-            while (current != null) {
-                if (o.equals(current.data)) {
-                    return true;
-                }
-                current = current.next;
-            }
+            current = current.next;
         }
 
         return false;
